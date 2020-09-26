@@ -1,0 +1,41 @@
+body {
+    background-color: lightcyan;
+}
+
+.header {
+    text-align: center;
+    padding: 10px;
+}
+
+.form {
+    background-color: rgb(255, 255, 255, 0.8);
+    padding: 10px;
+}
+
+#upload-btn {
+    width: 100px;
+}
+
+.count {
+    height: 80vh;
+    background-color: rgb(255, 255, 255, 1);
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.command {
+    font-weight: 500;
+}
+
+.parsed {
+    height: 50vh;
+    border: solid 1px;
+    border-radius: 0.15rem;
+    overflow: auto;
+    padding: 10px;
+    margin: 10px;
+}
+
+.message {
+    color: red;
+}
