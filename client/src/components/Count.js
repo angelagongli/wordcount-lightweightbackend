@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
+import { TextField } from 'office-ui-fabric-react/lib/TextField';
 
 const stackTokens = {
   childrenGap: 4,
@@ -26,7 +27,13 @@ function Count(props) {
           <span>{props.isParsing ? <Spinner label="Parsing..." /> : ""}</span>
         </Stack>
         {props.parsedPDF ?
-        <div className="parsed ms-fontSize-12">{props.parsedPDF}</div> : ""}
+        <TextField
+          readOnly
+          defaultValue={props.parsedPDF}
+          multiline
+          resizable={false}
+        />
+        : ""}
         <div className="ms-fontSize-12">
           *Word count is computed by first converting the .PDF file to text using the <span className="command">pdftotext</span> command-line utility, and then running the <span className="command">wc -w</span> command on the output .TXT file
         </div>
