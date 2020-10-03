@@ -27,13 +27,8 @@ body {
     font-weight: 500;
 }
 
-.parsed {
+textarea {
     height: 50vh;
-    border: solid 1px;
-    border-radius: 0.15rem;
-    overflow: auto;
-    padding: 10px;
-    margin: 10px;
 }
 
 .message {
