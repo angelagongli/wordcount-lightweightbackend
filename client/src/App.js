@@ -44,7 +44,7 @@ class App extends Component {
         <Header />
         <div className="container">
           <div className="row no-gutters">
-            <div className="col-12 col-lg-4 align-self-center">
+            <div className="col-12 col-lg-4 align-self-start">
               <Form updateUpload={this.updateUpload} />
             </div>
             <div className="col-12 col-lg-8">
