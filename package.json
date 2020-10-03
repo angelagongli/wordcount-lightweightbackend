@@ -26,6 +26,7 @@
     "@fluentui/react": "^7.141.0",
     "axios": "^0.20.0",
     "cookie-session": "^1.4.0",
+    "dicer": "^0.3.0",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
     "if-env": "^1.0.4"
