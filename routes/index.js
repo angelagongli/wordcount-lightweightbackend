@@ -104,13 +104,13 @@ router.post("/api/papers", function(req, res) {
   form.parse(req, (err, fields, files) => {
     // pdftotext documentation from Xpdf:
     // https://www.xpdfreader.com/pdftotext-man.html
-    const pdftotext = child_process.spawn('pdftotext',
-      ["-enc", "UTF-8", files.upload.path]);
+    // const pdftotext = child_process.spawn('pdftotext',
+    //   ["-enc", "UTF-8", files.upload.path]);
 
     // pdftotext -layout:
     // "Maintain (as best as possible) the original physical layout of the text."
-    // const pdftotext = child_process.spawn('pdftotext',
-    //   ["-enc", "UTF-8", "-layout", files.upload.path]);
+    const pdftotext = child_process.spawn('pdftotext',
+      ["-enc", "UTF-8", "-layout", files.upload.path]);
 
     // pdftotext table mode
     // "Table mode is similar to physical layout mode, but optimized for tabular data,
