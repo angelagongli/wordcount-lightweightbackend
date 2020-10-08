@@ -44,6 +44,15 @@ class App extends Component {
         <Header />
         <div className="container">
           <div className="row no-gutters">
+            <div className="col-12">
+              <h6 className="wordcount-blurb ms-fontSize-14">
+                <span className="highlight">
+                  Word count is computed by first converting the .PDF file to text using the <span className="command">pdftotext</span> command-line utility, and then running the <span className="command">wc -w</span> command on the output .TXT file
+                </span>
+              </h6>
+            </div>
+          </div>
+          <div className="row no-gutters">
             <div className="col-12 col-lg-4 align-self-start">
               <Form updateUpload={this.updateUpload} />
             </div>
