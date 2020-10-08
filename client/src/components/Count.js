@@ -19,8 +19,10 @@ function Count(props) {
           <span>{props.fileName}</span>
         </Stack>
         <Stack horizontal verticalAlign="center" tokens={stackTokens}>
-          <Label>Word count*:</Label>
-          <span>{props.wordCount}</span>
+          <Label>Word count:</Label>
+          {props.wordCount ?
+          <span className="highlight">{props.wordCount}</span>
+          : ""}
         </Stack>
         <Stack horizontal verticalAlign="center" tokens={stackTokens}>
           <Label>Text from .PDF:</Label>
@@ -34,9 +36,6 @@ function Count(props) {
           resizable={false}
         />
         : ""}
-        <div className="ms-fontSize-12">
-          *Word count is computed by first converting the .PDF file to text using the <span className="command">pdftotext</span> command-line utility, and then running the <span className="command">wc -w</span> command on the output .TXT file
-        </div>
       </div>
     </div>
   );
