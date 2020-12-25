@@ -12,7 +12,8 @@ class App extends Component {
     this.state = {
       file: {},
       isParsing: false,
-      paper: {}
+      paper: {},
+      fileUploadType: ""
     };
     this.updateUpload = this.updateUpload.bind(this);
   }
@@ -20,10 +21,14 @@ class App extends Component {
   componentDidMount() {  
     API.getPaper().then(res => {
       if (res.data) {
-        this.setState({ paper: res.data });
-        API.deletePaper().then(res => {
-          console.log("paper completely processed at App.js");
-        });
+        if (res.data.fileUploadType) {
+          this.setState({ fileUploadType: res.data.fileUploadType });
+        } else {
+          this.setState({ paper: res.data });
+          API.deletePaper().then(res => {
+            console.log("paper completely processed at App.js");
+          });
+        }
       }
     }).catch(err => {
       console.log(err);
@@ -54,7 +59,7 @@ class App extends Component {
           </div>
           <div className="row no-gutters">
             <div className="col-12 col-lg-4 align-self-start">
-              <Form updateUpload={this.updateUpload} />
+              <Form updateUpload={this.updateUpload} fileUploadType={this.state.fileUploadType} />
             </div>
             <div className="col-12 col-lg-8">
               <Count
