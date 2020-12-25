@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import { PrimaryButton } from 'office-ui-fabric-react';
@@ -15,6 +15,12 @@ function Form(props) {
     const handleFileSelect = (event) => {
         setFile(event.target.files[0]);
     }
+
+    useEffect(() => {
+        if (props.fileUploadType) {
+            setErrorMessage(`Your file is of MIME type ${props.fileUploadType}. Please upload your paper in .PDF form.`);
+        }
+    });
 
     function uploadPDF(event) {
         if (file) {
