@@ -20,7 +20,7 @@ function Form(props) {
         if (props.fileUploadType) {
             setErrorMessage(`Your file is of MIME type ${props.fileUploadType}. Please upload your paper in .PDF form.`);
         }
-    });
+    }, [props.fileUploadType]);
 
     function uploadPDF(event) {
         if (file) {
