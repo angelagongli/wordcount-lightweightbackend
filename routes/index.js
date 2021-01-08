@@ -1,8 +1,20 @@
 const fs = require("fs");
 const path = require("path");
 const child_process = require("child_process");
-const formidable = require("formidable");
 const router = require("express").Router();
+const multer = require("multer");
+const file = multer({ dest: "papers", fileFilter: fileFilter });
+
+function fileFilter(req, file, cb) {
+  if (file.mimetype === "application/pdf") {
+    console.log("Let .PDF file through filter");
+    cb(null, true);
+  } else {
+    console.log("Non-.PDF file cannot pass through filter");
+    req.session.fileUploadType = file.mimetype;
+    cb(null, false);
+  }
+}
 
 router.get("/api/papers", function(req, res) {
   if (req.session.path) {
@@ -26,68 +38,59 @@ router.get("/api/papers", function(req, res) {
   }
 });
 
-router.post("/api/papers", function(req, res) {
-  const form = formidable({ uploadDir: path.join(__dirname, "../papers") });
-  form.parse(req, (err, fields, files) => {
-    if (files.upload.type !== "application/pdf") {
-      const rm_file = child_process.spawn('rm', [files.upload.path]);
-  
-      rm_file.on('close', (code) => {
-        if (code !== 0) {
-          console.log(`rm_file process exited with code ${code}`);
-        }
-      });
+router.post("/api/papers", file.single("upload"), function(req, res) {
+  if (!req.file) {
+    console.log("Non-.PDF file cannot reach POST route");
+    res.redirect("/");
+    return;
+  }
 
-      req.session.fileUploadType = files.upload.type;
-      res.redirect("/");
-      return;
+  console.log("Path of .PDF file on server: " + req.file.path);
+
+  // pdftotext documentation from Xpdf:
+  // https://www.xpdfreader.com/pdftotext-man.html
+
+  // pdftotext -layout:
+  // "Maintain (as best as possible) the original physical layout of the text."
+  const pdftotext = child_process.spawn('pdftotext',
+    ["-enc", "UTF-8", "-layout", req.file.path]);
+
+  pdftotext.stdout.on('data', (data) => {
+    console.log(`pdftotext stdout: ${data}`);
+  });
+  
+  pdftotext.stderr.on('data', (data) => {
+    console.error(`pdftotext stderr: ${data}`);
+  });
+  
+  pdftotext.on('close', (code) => {
+    if (code !== 0) {
+      console.log(`pdftotext process exited with code ${code}`);
     }
     
-    // pdftotext documentation from Xpdf:
-    // https://www.xpdfreader.com/pdftotext-man.html
-
-    // pdftotext -layout:
-    // "Maintain (as best as possible) the original physical layout of the text."
-    const pdftotext = child_process.spawn('pdftotext',
-      ["-enc", "UTF-8", "-layout", files.upload.path]);
-
-    pdftotext.stdout.on('data', (data) => {
-      console.log(`pdftotext stdout: ${data}`);
+    const wc = child_process.spawn('wc', [req.file.path + ".txt", '-w']);
+    
+    wc.stdout.on('data', (data) => {
+      const paper = {
+        fileName: req.file.originalname,
+        path: req.file.path,
+        wordCount: parseInt(data.toString())
+      };
+      
+      req.session = paper;
+      console.log("new paper: " + JSON.stringify(paper));
+      res.redirect("/");
     });
     
-    pdftotext.stderr.on('data', (data) => {
-      console.error(`pdftotext stderr: ${data}`);
+    wc.stderr.on('data', (data) => {
+      console.error(`wc stderr: ${data}`);
     });
     
-    pdftotext.on('close', (code) => {
+    wc.on('close', (code) => {
       if (code !== 0) {
-        console.log(`pdftotext process exited with code ${code}`);
+        console.log(`wc process exited with code ${code}`);
       }
-      
-      const wc = child_process.spawn('wc', [files.upload.path + ".txt", '-w']);
-      
-      wc.stdout.on('data', (data) => {
-        const paper = {
-          fileName: files.upload.name,
-          path: files.upload.path,
-          wordCount: parseInt(data.toString())
-        };
-        
-        req.session = paper;
-        console.log("new paper: " + JSON.stringify(paper));
-        res.redirect("/");
-      });
-      
-      wc.stderr.on('data', (data) => {
-        console.error(`wc stderr: ${data}`);
-      });
-      
-      wc.on('close', (code) => {
-        if (code !== 0) {
-          console.log(`wc process exited with code ${code}`);
-        }
-      });  
-    });    
+    });  
   });
 });
 
